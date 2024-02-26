@@ -1,43 +1,20 @@
 # What is CuteCapture?
 
-CuteCapture is a collection of a DS and 3DS capturing tool for linux and Mac OS X for use with the capture boards by [3dscapture.com](http://3dscapture.com). It is written in C++ and uses [SFML](http://www.sfml-dev.org/).
+Go here for an explanation of the original CuteCapture:
+https://github.com/Gotos/CuteCapture
 
-# How to install
+# What is RoomTimer?
 
-Right now, CuteCapture will only be installed where you unpack the zip you will download in the steps below. It will not be installed system-wide.
+This is a WIP of a relatively minor modification to the original CuteCapture, which shows the time it took to complete the previous room. It's intended for speedrun practice, and it only works on DS for now because I don't have a 3DS to test with.
 
-## MacOS
+Text will appear on the capture window in the upper left of the top screen, showing the time in the format [SECONDS]`[FRAMES]. For example 3`42 is 3 seconds and 42 frames, or 222 total frames. For the sake of simplicity, 60 frames are equated to 1 second. It works by counting the number of frames between separate sections of completely black frames, and then displaying this number until you reach another separate set of black frames. This should work as a room timer for any game in which rooms are separated by black frames. All of the calculation is done by analyzing the video feed, so it won't interfere with the operation of the original game at all.
 
-Go to [the releases page](https://github.com/Gotos/Cute3DSCapture/releases) and download `CuteCapture.mac.zip`. Inside the zip, you will find two app bundles, one for Cute3DSCapture, one for CuteDSCapture. Just run the one appropriate for your handheld.
+# Warnings
 
-## Linux
-
-To run CuteCapture, you will need to first install SFML and libusb-1.0. On a Debian-based distribution like Ubuntu you are likely able to install these by executing `sudo apt-get install libusb-1.0-0 libsfml-dev`.
-
-(Installing the dev-package of SFML is not strictly needed, but at least on Ubuntu way easier as there is no  other package that installs all required SFML libraries without knowing the supported version.)
-
-During installation, try to pay attention to the SFML version that is being installed. On modern distributions, at the time of writting, the version will likely be 2.4 or 2.5. If you notice which version was installed, you can try the rest for both version.
-
-Go to [the releases page](https://github.com/Gotos/Cute3DSCapture/releases) and download either `CuteCapture-sfml-2.4.linux.zip` or `CuteCapture-sfml-2.5.linux.zip`, depending on your installed SFML version. Inside the zip, you will find two executables, `CuteDSCapture` and `Cute3DSCapture`. Just run the one appropriate for your handheld.
-
-If CuteCapture only shows a blank window instead of connecting to your handheld, just run `install_udev_rules.sh` in a terminal. This will install udev rules to allow CuteCapture to connect to your handheld via USB.
-
-If CuteCapture doesn't open a window whatsoever, you likely either didn't install libusb or SFML correctly or are trying to use the build for the wrong SFML version. Try downloading the other zip and see if the files in that one work.
-
-# How to compile
-
-Install SFML and the SFML-headers (libsfml-dev or similar) as well as libusb-1.0.0 and the headers (libusb-1.0.0-dev). Then, simple do `./autogen.sh && ./configure && make`. If you only want Cute 3DS Capture or Cute DS Capture, replace `make` with `make Cute3DSCapture` or `make CuteDSCapture`.
-
-# How to use
-
-Start CuteDSCapture or Cute3DSCapture, depending on your console.
-
-Resizing the window: `1`-`9` or `0` will resize the resolution to 1x, 1.5x, 2x,... the original resolution of the handheld.
-
-Window Split: Press `space` to toggle between one window containing both screens of the handheld and two individual windows.
-
-DS Crop: In Cute3DSCapture, press `C` to toggle cropping to the original DS resolution (you can start DS titles in the original resolution when playing on 3DS by hold START or SELECT when launching the game).
-
-# Why "Cute" Capture?
-
-It was a play on words when I first tried to design a capture software for 3DS with Qt (which is pronounced "cute"). Although I didn't stay with Qt, I liked the name Cute 3DS Capture and called the "port" for DS Cute DS Capture. Since I've merged their codebases into one, they are collectively called CuteCapture now.
+1. This only works on regular DS capture for now (not 3DS.) It should be easy to implement for 3DS, but I won't do that until I can get test results from a 3DS owner. If you have one, you're open to implement it yourself (as a pull request or a fork, what have you.)
+2. This is only tested on linux with libsfml version 2.5. That is also what the zip version in Releases is for. Check the original CuteCapture for notes on building from source.
+3. The text appears on the top screen. This is convenient for the main game I use it for, but it may not be best for all games. I may add text placement as a config option in the future.
+4. It will of course not be useful if the room is not separated by black frames, such as when the screen fades to white.
+5. A frame is seen as a black frame if over half of the pixels on the bottom screen are completely black. In the future I may add config options to make this work for the top screen instead, or to change the ratio of black pixels required.
+6. If your computer can't keep up with the fps of the game, the results may not be useful. It assumes that your capture program processes the capture feed at 60fps. It also assumes all games are 60fps, and that may not be true for all games.
+7. A separate counter for the black frames between rooms may be added in the future.
