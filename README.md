@@ -7,7 +7,7 @@ https://github.com/Gotos/CuteCapture
 
 This is a WIP of a relatively minor modification to the original CuteCapture, which shows the time it took to complete the previous room. It's intended for speedrun practice, and it only works on DS for now because I don't have a 3DS to test with.
 
-Text will appear on the capture window in the upper left of the top screen, showing the time in the format [SECONDS]`[FRAMES]. For example 3`42 is 3 seconds and 42 frames, or 222 total frames. For the sake of simplicity, 60 frames are equated to 1 second. It works by counting the number of frames between separate sections of completely black frames, and then displaying this number until you reach another separate set of black frames. This should work as a room timer for any game in which rooms are separated by black frames. All of the calculation is done by analyzing the video feed, so it won't interfere with the operation of the original game at all.
+Text will appear on the capture window in the upper left of the top screen, showing the time in the format (SECONDS)\`(FRAMES). For example 3\`42 is 3 seconds and 42 frames, or 222 total frames. For the sake of simplicity, 60 frames are equated to 1 second. It works by counting the number of frames between separate sections of completely black frames, and then displaying this number until you reach another separate set of black frames. This should work as a room timer for any game in which rooms are separated by black frames. All of the calculation is done by analyzing the video feed, so it won't interfere with the operation of the original game at all.
 
 # Warnings
 
