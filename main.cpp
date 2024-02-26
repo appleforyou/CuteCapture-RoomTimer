@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  *         limitations under the License.
  */
+/*
+ * (Above is the original CuteCapture license)
+ */
 
 #include <stdio.h>
 #include <unistd.h>
@@ -129,6 +132,21 @@ int main()
     bottom_screen.setTexture(&texture);
     bottom_screen.setTextureRect(sf::IntRect(0,400,240,320));
 #endif
+    sf::Font font;
+    sf::Text text;
+    font.loadFromFile("Font/URWGothic-Book.ttf");
+    text.setFont(font);
+    text.setString("Hello world");
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::White);
+    text.setOutlineColor(sf::Color::Black);
+    text.setStyle(sf::Text::Bold);
+    text.setOutlineThickness(2);
+
+    uint roomframes = 0;
+    bool blackframe = true;
+
+
 
     while (window.isOpen())
     {
@@ -428,6 +446,25 @@ int main()
             if(capture_grabFrame(frameBuf)) {
                 toRGBA(rgbaBuf,frameBuf);
                 texture.update(rgbaBuf,int(FRAMEWIDTH),int(FRAMEHEIGHT*2),0,0);
+
+                uint matchcount = 0;
+                for (uint i = FRAMEHEIGHT*FRAMEWIDTH; i < FRAMEHEIGHT*FRAMEWIDTH*2; ++i) {
+                    if (frameBuf[i] == 0) {
+                        ++matchcount;
+                    }
+                }
+                if (matchcount > FRAMEHEIGHT*FRAMEWIDTH/2) {
+                    if (!blackframe) {
+                        char modframes[3];
+                        snprintf (modframes, 3, "%02d", roomframes%60);
+                        text.setString(std::to_string(roomframes/60)+"`"+modframes);
+                        blackframe = true;
+                        roomframes = 0;
+                    }
+                } else {
+                    ++roomframes;
+                    blackframe = false;
+                }
             } else {
                 capture_deinit();
                 init = false;
@@ -449,12 +486,14 @@ int main()
         }
 
         window.draw(top_screen);
+
         if (!split) {
             window.draw(bottom_screen);
         } else {
             bottom_window.draw(bottom_screen);
             bottom_window.display();
         }
+        window.draw(text);
 
 
         window.display();
