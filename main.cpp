@@ -126,17 +126,11 @@ int main()
     top_screen.setTextureRect(sf::IntRect(0, 0, FRAMEWIDTH, FRAMEHEIGHT));
     bottom_screen.setTexture(&texture);
     bottom_screen.setTextureRect(sf::IntRect(0, FRAMEHEIGHT, FRAMEWIDTH, FRAMEHEIGHT));
-#else
-    top_screen.setTexture(&texture);
-    top_screen.setTextureRect(sf::IntRect(0,0,240,400));
-    bottom_screen.setTexture(&texture);
-    bottom_screen.setTextureRect(sf::IntRect(0,400,240,320));
-#endif
     sf::Font font;
     sf::Text text;
     font.loadFromFile("Font/URWGothic-Book.ttf");
     text.setFont(font);
-    text.setString("Hello world");
+    text.setString("0`0");
     text.setCharacterSize(24);
     text.setFillColor(sf::Color::White);
     text.setOutlineColor(sf::Color::Black);
@@ -145,6 +139,12 @@ int main()
 
     uint roomframes = 0;
     bool blackframe = true;
+#else
+    top_screen.setTexture(&texture);
+    top_screen.setTextureRect(sf::IntRect(0,0,240,400));
+    bottom_screen.setTexture(&texture);
+    bottom_screen.setTextureRect(sf::IntRect(0,400,240,320));
+#endif
 
 
 
@@ -493,7 +493,9 @@ int main()
             bottom_window.draw(bottom_screen);
             bottom_window.display();
         }
+#ifdef DS        
         window.draw(text);
+#endif
 
 
         window.display();
