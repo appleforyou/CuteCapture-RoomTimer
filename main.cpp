@@ -139,6 +139,7 @@ int main()
 
     uint roomframes = 0;
     bool blackframe = true;
+    bool timing_bottom = true;
 #else
     top_screen.setTexture(&texture);
     top_screen.setTextureRect(sf::IntRect(0,0,240,400));
@@ -271,6 +272,22 @@ int main()
                         split = false;
                     }
                     break;
+#ifdef DS
+                case sf::Keyboard::Up:
+                    text.setPosition(0, 0);
+                    break;
+                case sf::Keyboard::Down:
+                    text.setPosition(0, FRAMEHEIGHT);
+                    break;
+                case sf::Keyboard::PageUp:
+                    timing_bottom = false;
+                    text.setString("Checking frames on\ntop screen.");
+                    break;
+                case sf::Keyboard::PageDown:
+                    timing_bottom = true;
+                    text.setString("Checking frames on\nbottom screen.");
+                    break;
+#endif                
                 default:
                     break;
                 }
@@ -399,6 +416,22 @@ int main()
                             split = false;
                         }
                         break;
+#ifdef DS
+                    case sf::Keyboard::Up:
+                        text.setPosition(0, 0);
+                        break;
+                    case sf::Keyboard::Down:
+                        text.setPosition(0, FRAMEHEIGHT);
+                        break;
+                    case sf::Keyboard::PageUp:
+                        timing_bottom = false;
+                        text.setString("Checking frames on\ntop screen.");
+                        break;
+                    case sf::Keyboard::PageDown:
+                        timing_bottom = true;
+                        text.setString("Checking frames on\nbottom screen.");
+                        break;
+#endif
                     default:
                         break;
                     }
@@ -448,7 +481,7 @@ int main()
                 texture.update(rgbaBuf,int(FRAMEWIDTH),int(FRAMEHEIGHT*2),0,0);
 
                 uint matchcount = 0;
-                for (uint i = FRAMEHEIGHT*FRAMEWIDTH; i < FRAMEHEIGHT*FRAMEWIDTH*2; ++i) {
+                for (uint i = FRAMEHEIGHT*FRAMEWIDTH*timing_bottom; i < FRAMEHEIGHT*FRAMEWIDTH*(timing_bottom+1); ++i) {
                     if (frameBuf[i] == 0) {
                         ++matchcount;
                     }
@@ -489,14 +522,20 @@ int main()
 
         if (!split) {
             window.draw(bottom_screen);
+#ifdef DS
+            window.draw(text);
+#endif
         } else {
             bottom_window.draw(bottom_screen);
+#ifdef DS
+            if (text.getPosition().y > 0) {
+                bottom_window.draw(text);
+            } else {
+                window.draw(text);
+            }
+#endif
             bottom_window.display();
         }
-#ifdef DS        
-        window.draw(text);
-#endif
-
 
         window.display();
     }
