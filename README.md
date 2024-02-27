@@ -27,4 +27,4 @@ All keyboard controls from the original CuteCapture are retained. New controls h
 
 # Note on the timing method
 
-As mentioned above, the timer assumes 60fps, but most DS games are actually 59.8261 fps. There's no way to cleanly convert this to seconds + extra frames, so readability was prioritized. As a speedrun practice tool the most important function is to see the difference in frames. If you want to do the real-time math for whatever reason, you can convert seconds to 60 frames each before dividing by the real frame rate.
+As mentioned above, the timer simplifies to 60fps, but most DS games are actually 59.8261 fps. There's no way to cleanly convert this to seconds + extra frames, so readability was prioritized. As a speedrun practice tool the most important function is to see the difference in frames. If you want to do the real-time math for whatever reason, you can convert seconds to 60 frames each before dividing by the real frame rate.
