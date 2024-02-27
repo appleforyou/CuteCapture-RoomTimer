@@ -27,6 +27,4 @@ Press the End key to toggle whether the timer is displayed or hidden.
 
 # Note on the timing method
 
-As mentioned above, the timer represents frames and not real time. It assumes 60fps which is slightly different from the real framerate of "60fps" games, so your results will not equate exactly to real time. This is done for readability's sake, and shouldn't change the results of which strategy is faster than another, as long as you're not attempting to compare times between this program and a real-time timer. If you want to do that, you will get a more accurate number by adding up the total frames and then dividing it by the true framerate (probably 59.8261 fps, but not all games may match this.)
-
-Another option would be to show a raw framecount without converting to seconds. I could add this, or even real-time timing as an option if requested, but for me the current approach is a good enough tradeoff between readability and truthfulness of the numbers.
+As mentioned above, the timer assumes 60fps which is slightly different from the real framerate of "60fps" games, so your results will not equate exactly to real time. This is done for readability's sake. If for some reason you want to compare it to real time, you will get a more accurate number by adding up the total frames and then dividing it by the true framerate (probably 59.8261 fps for DS, but not all games may match this.)
