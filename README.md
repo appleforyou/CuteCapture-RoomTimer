@@ -12,18 +12,18 @@ Text will appear on the capture window by default in the upper left of the top s
 # Controls
 
 All keyboard controls from the original CuteCapture are retained. New controls have been added:
-Press the up or down arrow key to move the timer to the top or bottom screen. This defaults to the top screen.
-Press the PageUp or PageDown key to change which screen is currently being checked for black frames. This defaults to the bottom screen.
-Press the End key to toggle whether the timer is displayed or hidden.
+- Press the up or down arrow key to move the timer to the top or bottom screen. This defaults to the top screen.
+- Press the PageUp or PageDown key to change which screen is currently being checked for black frames. This defaults to the bottom screen.
+- Press the End key to toggle whether the timer is displayed or hidden.
 
 # Warnings
 
-1. This only works on regular DS capture for now (not 3DS.) It should be easy to implement for 3DS, but I won't do that until I can get test results from a 3DS owner. If you have one, you're open to implement it yourself (as a pull request or a fork, what have you.)
-2. This is only tested on linux with libsfml version 2.5. That is also what the zip version in Releases is for. Check the original CuteCapture for notes on building from source.
-3. It will of course not be useful if the room is not separated by black frames, such as when the screen fades to white.
-4. A frame is seen as a black frame if over half of the pixels on the chosen screen are completely black.
-5. If your computer can't keep up with the fps of the game, the results may not be useful. It assumes that your capture program processes the capture feed at 60fps. It also assumes all games are 60fps, and that may not be true for all games.
-6. A separate counter for the black frames between rooms may be added in the future.
+- This only works on regular DS capture for now (not 3DS.) It should be easy to implement for 3DS, but I won't do that until I can get test results from a 3DS owner. If you have one, you're open to implement it yourself (as a pull request or a fork, what have you.)
+- This is only tested on linux with libsfml version 2.5. That is also what the zip version in Releases is for. Check the original CuteCapture for notes on building from source.
+- It will of course not be useful if the room is not separated by black frames, such as when the screen fades to white.
+- A frame is seen as a black frame if over half of the pixels on the chosen screen are completely black.
+- If your computer can't keep up with the fps of the game, the results may not be useful. It assumes that your capture program processes the capture feed at 60fps. It also assumes all games are 60fps, and that may not be true for all games.
+- A separate counter for the black frames between rooms may be added in the future.
 
 # Note on the timing method
 
