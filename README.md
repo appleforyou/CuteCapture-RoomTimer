@@ -27,4 +27,4 @@ Press the End key to toggle whether the timer is displayed or hidden.
 
 # Note on the timing method
 
-As mentioned above, the timer assumes 60fps which is slightly different from the real framerate of "60fps" games, so your results will not equate exactly to real time. This is done for readability's sake. If for some reason you want to compare it to real time, you will get a more accurate number by adding up the total frames and then dividing it by the true framerate (probably 59.8261 fps for DS, but not all games may match this.)
+As mentioned above, the timer assumes 60fps, but most DS games are actually 59.8261 fps. There's no way to cleanly convert this to seconds + extra frames, so readability was prioritized. As a speedrun practice tool the most important function is to see the difference in frames. If you want to do the real-time math for whatever reason, you can convert seconds to 60 frames each before dividing by the real frame rate.
