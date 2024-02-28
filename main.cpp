@@ -140,6 +140,7 @@ int main()
     uint roomframes = 0;
     bool blackframe = true;
     bool timing_bottom = true;
+    bool text_visible = true;
 #else
     top_screen.setTexture(&texture);
     top_screen.setTextureRect(sf::IntRect(0,0,240,400));
@@ -162,7 +163,7 @@ int main()
                 window.close();
                 break;
             case sf::Event::KeyPressed:
-                switch(event.key.code) {    
+                switch(event.key.code) {
                     case sf::Keyboard::Num1:
                     case sf::Keyboard::Num2:
                     case sf::Keyboard::Num3:
@@ -199,7 +200,7 @@ int main()
 #ifndef DS
                         }
 #endif
-                    
+
                         break;
                 case sf::Keyboard::C:
                 // Switch to/from crop mode
@@ -287,7 +288,10 @@ int main()
                     timing_bottom = true;
                     text.setString("Checking frames on\nbottom screen.");
                     break;
-#endif                
+                case sf::Keyboard::End:
+                    text_visible = !text_visible;
+                    break;
+#endif
                 default:
                     break;
                 }
@@ -344,7 +348,7 @@ int main()
 #ifndef DS
                         }
 #endif
-                    
+
                         break;
 #ifndef DS
                     case sf::Keyboard::C:
@@ -430,6 +434,9 @@ int main()
                     case sf::Keyboard::PageDown:
                         timing_bottom = true;
                         text.setString("Checking frames on\nbottom screen.");
+                        break;
+                    case sf::Keyboard::End:
+                        text_visible = !text_visible;
                         break;
 #endif
                     default:
@@ -523,15 +530,19 @@ int main()
         if (!split) {
             window.draw(bottom_screen);
 #ifdef DS
-            window.draw(text);
+            if (text_visible) {
+                window.draw(text);
+            }
 #endif
         } else {
             bottom_window.draw(bottom_screen);
 #ifdef DS
-            if (text.getPosition().y > 0) {
-                bottom_window.draw(text);
-            } else {
-                window.draw(text);
+            if (text_visible) {
+                if (text.getPosition().y > 0) {
+                    bottom_window.draw(text);
+                } else {
+                    window.draw(text);
+                }
             }
 #endif
             bottom_window.display();
