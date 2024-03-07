@@ -126,6 +126,16 @@ int main()
     top_screen.setTextureRect(sf::IntRect(0, 0, FRAMEWIDTH, FRAMEHEIGHT));
     bottom_screen.setTexture(&texture);
     bottom_screen.setTextureRect(sf::IntRect(0, FRAMEHEIGHT, FRAMEWIDTH, FRAMEHEIGHT));
+#else
+    top_screen.setTexture(&texture);
+    top_screen.setTextureRect(sf::IntRect(0,0,240,400));
+    bottom_screen.setTexture(&texture);
+    bottom_screen.setTextureRect(sf::IntRect(0,400,240,320));
+
+    sf::Clock roomtime;
+    const uint TOPSIZE = 96000; //400*240
+    const uint BOTTOMSIZE = 76800; //320*240
+#endif
     sf::Font font;
     sf::Text text;
     font.loadFromFile("Font/URWGothic-Book.ttf");
@@ -140,13 +150,8 @@ int main()
     uint roomframes = 0;
     bool blackframe = true;
     bool timing_bottom = true;
+    bool text_bottom = false;
     bool text_visible = true;
-#else
-    top_screen.setTexture(&texture);
-    top_screen.setTextureRect(sf::IntRect(0,0,240,400));
-    bottom_screen.setTexture(&texture);
-    bottom_screen.setTextureRect(sf::IntRect(0,400,240,320));
-#endif
 
 
 
@@ -217,6 +222,11 @@ int main()
                         bottom_window.setView(ds_crop_bottom);
                     }
                     ds_crop_mode = true;
+                    if (!text_bottom) {
+                        text.setPosition(72, 48);
+                    } else {
+                        text.setPosition(72, 240);
+                    }
                 } else {
                     if (!split) {
                         window.setView(total);
@@ -229,6 +239,11 @@ int main()
                         bottom_window.setView(bottom);
                     }
                     ds_crop_mode = false;
+                    if (!text_bottom) {
+                        text.setPosition(0, 0);
+                    } else {
+                        text.setPosition(40, 240);
+                    }
                 }
 #endif
                     break;
@@ -276,10 +291,30 @@ int main()
 #ifdef DS
                 case sf::Keyboard::Up:
                     text.setPosition(0, 0);
+                    text_bottom = false;
                     break;
                 case sf::Keyboard::Down:
                     text.setPosition(0, FRAMEHEIGHT);
+                    text_bottom = true;
                     break;
+#else
+                case sf::Keyboard::Up:
+                    if (!ds_crop_mode) {
+                        text.setPosition(0,0);
+                    } else {
+                        text.setPosition(72,48);
+                    }
+                    text_bottom = false;
+                    break;
+                case sf::Keyboard::Down:
+                    if (!ds_crop_mode) {
+                        text.setPosition(40, 240);
+                    } else {
+                        text.setPosition(72, 240);
+                    }
+                    text_bottom = true;
+                    break;
+#endif
                 case sf::Keyboard::PageUp:
                     timing_bottom = false;
                     text.setString("Checking frames on\ntop screen.");
@@ -291,7 +326,6 @@ int main()
                 case sf::Keyboard::End:
                     text_visible = !text_visible;
                     break;
-#endif
                 default:
                     break;
                 }
@@ -364,6 +398,11 @@ int main()
                                 bottom_window.setView(ds_crop_bottom);
                             }
                             ds_crop_mode = true;
+                            if (!text_bottom) {
+                                text.setPosition(72, 48);
+                            } else {
+                                text.setPosition(72, 240);
+                            }
                         } else {
                             if (!split) {
                                 window.setView(total);
@@ -376,6 +415,11 @@ int main()
                                 bottom_window.setView(bottom);
                             }
                             ds_crop_mode = false;
+                            if (!text_bottom) {
+                                text.setPosition(0, 0);
+                            } else {
+                                text.setPosition(40, 240);
+                            }
                         }
                         break;
 #endif
@@ -423,10 +467,30 @@ int main()
 #ifdef DS
                     case sf::Keyboard::Up:
                         text.setPosition(0, 0);
+                        text_bottom = false;
                         break;
                     case sf::Keyboard::Down:
                         text.setPosition(0, FRAMEHEIGHT);
+                        text_bottom = true;
                         break;
+#else
+                    case sf::Keyboard::Up:
+                        if (!ds_crop_mode) {
+                            text.setPosition(0,0);
+                        } else {
+                            text.setPosition(72,48);
+                        }
+                        text_bottom = false;
+                        break;
+                    case sf::Keyboard::Down:
+                        if (!ds_crop_mode) {
+                            text.setPosition(40, 240);
+                        } else {
+                            text.setPosition(72, 240);
+                        }
+                        text_bottom = true;
+                        break;
+#endif
                     case sf::Keyboard::PageUp:
                         timing_bottom = false;
                         text.setString("Checking frames on\ntop screen.");
@@ -438,7 +502,6 @@ int main()
                     case sf::Keyboard::End:
                         text_visible = !text_visible;
                         break;
-#endif
                     default:
                         break;
                     }
@@ -512,9 +575,62 @@ int main()
 #else
             switch(capture_grabFrame(frameBuf)) {
             case CAPTURE_OK:
+            {
                 toRGBA(frameBuf,rgbaBuf);
                 texture.update(rgbaBuf,int(FRAMEWIDTH),int(FRAMEHEIGHT),0,0);
+
+                uint matchcount = 0;
+                if (!ds_crop_mode) {
+                    uint screen_begin = TOPSIZE*timing_bottom;
+                    uint screen_end = TOPSIZE + (BOTTOMSIZE*timing_bottom);
+                    uint targetcount = (timing_bottom) ? BOTTOMSIZE / 2 : TOPSIZE / 2;
+                    for (uint i = screen_begin; i < screen_end; ++i) {
+                        if ((frameBuf[i*3] == 0) && (frameBuf[i*3+1] == 0) && (frameBuf[i*3+2]) == 0) {
+                            ++matchcount;
+                        }
+                    }
+                    if (matchcount > targetcount) {
+                        if (!blackframe) {
+                            sf::Int32 roomms = roomtime.getElapsedTime().asMilliseconds();
+                            char modms[3];
+                            snprintf (modms, 3, "%02d", roomms%1000);
+                            text.setString(std::to_string(roomms/1000)+"."+modms);
+                            blackframe = true;
+                        }
+                    } else {
+                        if (blackframe) {
+                            roomtime.restart();
+                            blackframe = false;
+                        }
+                    }
+                } else {
+                    //DS screens are internally offset from the actual outsides of the 3DS maximum screen size.
+                    //Both screens are stored "horizontally" in frameBuf so the "x" value is used to get to the bottom screen
+                    uint dscrop_offset_x = 360*timing_bottom; //400 (3DS top screen width) - 72 (top screen left margin) + 32 (bottom screen left margin)
+                    uint dscrop_offset_y = 48*timing_bottom; //240 (3DS screen height) - 192 (DS screen height)
+                    for (uint x = 72 + dscrop_offset_x; x < 328 + dscrop_offset_x; ++x) {
+                        for (uint y = 0 + dscrop_offset_y; y < 192 + dscrop_offset_y; ++y) {
+                            uint i = x * 240 + y;
+                            if ((frameBuf[i*3] == 0) && (frameBuf[i*3+1] == 0) && (frameBuf[i*3+2]) == 0) {
+                                ++matchcount;
+                            }
+                        }
+                    }
+                    if (matchcount > FRAMEHEIGHT*FRAMEWIDTH/2) {
+                        if (!blackframe) {
+                            char modframes[3];
+                            snprintf (modframes, 3, "%02d", roomframes%60);
+                            text.setString(std::to_string(roomframes/60)+"`"+modframes);
+                            blackframe = true;
+                            roomframes = 0;
+                        }
+                    } else {
+                        ++roomframes;
+                        blackframe = false;
+                    }
+                }
                 break;
+            }
             case CAPTURE_ERROR:
                 capture_deinit();
                 init = false;
@@ -529,22 +645,18 @@ int main()
 
         if (!split) {
             window.draw(bottom_screen);
-#ifdef DS
             if (text_visible) {
                 window.draw(text);
             }
-#endif
         } else {
             bottom_window.draw(bottom_screen);
-#ifdef DS
             if (text_visible) {
-                if (text.getPosition().y > 0) {
+                if (text_bottom) {
                     bottom_window.draw(text);
                 } else {
                     window.draw(text);
                 }
             }
-#endif
             bottom_window.display();
         }
 
